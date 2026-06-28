@@ -130,14 +130,14 @@ def run_full_pipeline(stokes_L, stokes_S, dem, pixel_size, target_center,
         )
 
         # CPR and DOP
-        CPR_L = np.abs((S1 - S2) / (S1 + S2 + 1e-10))
+        CPR_L = np.abs((S1 - S4) / (S1 + S4 + 1e-10))
         DOP_L = np.sqrt(S2**2 + S3**2 + S4**2) / (S1 + 1e-10)
 
         S1s, S2s, S3s, S4s = (
             stokes_S_proc['S1'], stokes_S_proc['S2'],
             stokes_S_proc['S3'], stokes_S_proc['S4']
         )
-        CPR_S = np.abs((S1s - S2s) / (S1s + S2s + 1e-10))
+        CPR_S = np.abs((S1s - S4s) / (S1s + S4s + 1e-10))
 
         # m-chi decomposition
         m = DOP_L

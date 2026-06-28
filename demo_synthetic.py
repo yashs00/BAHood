@@ -141,22 +141,22 @@ def generate_synthetic_stokes(dem, band='L', ice_center=(300, 300),
     S1 = S1_base + np.random.exponential(0.05, (rows, cols))
 
     # For normal surface: CPR ~ 0.3, DOP ~ 0.5-0.8
-    # CPR = (S1 - S2) / (S1 + S2) => S2 = S1 * (1 - CPR) / (1 + CPR)
+    # CPR = (S1 - S4) / (S1 + S4) => S4 = S1 * (1 - CPR) / (1 + CPR)
     background_cpr = 0.3 + np.random.normal(0, 0.05, (rows, cols))
     background_cpr = np.clip(background_cpr, 0.05, 0.7)
-    S2 = S1 * (1 - background_cpr) / (1 + background_cpr)
+    S4 = S1 * (1 - background_cpr) / (1 + background_cpr)
 
-    # S3, S4: cross-pol and circular components
+    # S2, S3: remaining polarized components
     # DOP = sqrt(S2^2 + S3^2 + S4^2) / S1
-    # For moderate DOP (~0.6): S3 and S4 are moderate
+    # For moderate DOP (~0.6): S2 and S3 are moderate
     background_dop = 0.6 + np.random.normal(0, 0.1, (rows, cols))
     background_dop = np.clip(background_dop, 0.3, 0.9)
     remaining_power = np.sqrt(
-        np.maximum(0, (background_dop * S1)**2 - S2**2)
+        np.maximum(0, (background_dop * S1)**2 - S4**2)
     )
     phase = np.random.uniform(0, 2 * np.pi, (rows, cols))
-    S3 = remaining_power * np.cos(phase) * 0.7
-    S4 = remaining_power * np.sin(phase) * 0.7
+    S2 = remaining_power * np.cos(phase) * 0.7
+    S3 = remaining_power * np.sin(phase) * 0.7
 
     # Add speckle noise (multiplicative)
     speckle = np.random.gamma(5, 0.2, (rows, cols))
@@ -188,12 +188,12 @@ def generate_synthetic_stokes(dem, band='L', ice_center=(300, 300),
 
     # Apply ice signatures with smooth blending
     S1_ice = S1 * ice_s1_boost
-    S2_ice = S1_ice * (1 - ice_cpr) / (1 + ice_cpr)
+    S4_ice = S1_ice * (1 - ice_cpr) / (1 + ice_cpr)
     remaining_ice = np.sqrt(
-        np.maximum(0, (ice_dop * S1_ice)**2 - S2_ice**2)
+        np.maximum(0, (ice_dop * S1_ice)**2 - S4_ice**2)
     )
-    S3_ice = remaining_ice * np.cos(phase) * 0.5
-    S4_ice = remaining_ice * np.sin(phase) * 0.5
+    S2_ice = remaining_ice * np.cos(phase) * 0.5
+    S3_ice = remaining_ice * np.sin(phase) * 0.5
 
     # Blend ice and background
     S1 = S1 * (1 - ice_weight) + S1_ice * ice_weight

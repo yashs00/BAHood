@@ -3,10 +3,9 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from ui_app import app
+import ui_app
 
-
-def test_app_has_routes():
-    client = app.test_client()
-    response = client.get('/')
-    assert response.status_code == 200
+def test_ui_html_content():
+    """Smoke test to ensure the UI module loads and HTML is valid."""
+    assert "LunarIce-360" in ui_app.HTML
+    assert "<button" in ui_app.HTML

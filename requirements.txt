@@ -1,0 +1,10 @@
+numpy
+scipy
+matplotlib
+scikit-learn
+emcee
+corner
+pymoo
+rasterio
+gdal
+pytest

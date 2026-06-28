@@ -127,10 +127,10 @@ For the ice detection fusion, compute ROC curves and AUC against synthetic groun
 
 ## ✅ Pre-Hackathon Checklist
 
-- [ ] Fix CPR formula inconsistency (#1)
-- [ ] Verify m-chi decomposition (#2)
-- [ ] Fix or remove broken test (#3)
-- [ ] Add requirements.txt (#10)
+- [x] Fix CPR formula inconsistency (#1)
+- [x] Verify m-chi decomposition (#2)
+- [x] Fix or remove broken test (#3)
+- [x] Add requirements.txt (#10)
 - [ ] Run full pipeline on synthetic data — verify all 12 figures generate
 - [ ] Test with varying grid sizes to ensure scalability
 - [ ] Prepare for real DFSAR data format (GeoTIFF from PRADAN portal)

@@ -132,22 +132,10 @@ def mchi_decomposition(S1, S2, S3, S4):
     sin2chi = np.clip(sin2chi, -1.0, 1.0)
     chi = 0.5 * np.arcsin(sin2chi)
 
-    # Scattering powers
-    Pv = S1 * m * (1.0 - np.abs(sin2chi))          # Volume
-    Ps = S1 * m * (1.0 + np.abs(sin2chi)) / 2.0    # Surface (even-bounce)
-    Pd = S1 * m * (1.0 + np.abs(sin2chi)) / 2.0    # Double-bounce seed
-
-    # Discriminate surface vs double-bounce using sign of chi
-    # chi > 0 → surface-dominant, chi < 0 → double-bounce-dominant
-    Ps = np.where(chi >= 0,
-                  S1 * m * (1.0 + sin2chi) / 2.0,
-                  S1 * m * (1.0 - np.abs(sin2chi)) / 2.0)
-    Pd = np.where(chi < 0,
-                  S1 * m * (1.0 - sin2chi) / 2.0,
-                  S1 * m * (1.0 - np.abs(sin2chi)) / 2.0)
-
-    # Volume component  =  unpolarised power
-    Pv = S1 * (1.0 - m)
+    # Scattering powers according to Raney (2012) m-chi decomposition
+    Pv = S1 * (1.0 - m)                               # Volume (unpolarized)
+    Ps = S1 * m * (1.0 + sin2chi) / 2.0               # Surface (even-bounce)
+    Pd = S1 * m * (1.0 - sin2chi) / 2.0               # Double-bounce (odd-bounce)
 
     return {
         'm': m,

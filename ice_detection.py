@@ -149,8 +149,20 @@ def gmm_ice_detection(feature_stack, n_clusters=None):
 
     # Identify ice cluster: un-scale centres back to physical units
     centres_physical = scaler.inverse_transform(gmm.means_)
-    # Score = CPR (col 0) - DOP (col 1) → highest wins
-    scores = centres_physical[:, 0] - centres_physical[:, 1]
+    
+    CPR_c = centres_physical[:, 0]
+    DOP_c = centres_physical[:, 1]
+    H_c = centres_physical[:, 5]
+    alpha_c = centres_physical[:, 7]
+    
+    # Base score = CPR - DOP -> highest wins
+    scores = CPR_c - DOP_c
+    
+    # Secondary validation: penalize clusters that are clearly not in 
+    # H-Alpha ice zones (H > 0.5 and alpha > 42.5)
+    penalty_mask = (H_c < 0.5) | (alpha_c < 40.0)
+    scores[penalty_mask] -= 10.0
+    
     ice_cluster_id = int(np.argmax(scores))
 
     # Reshape
