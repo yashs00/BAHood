@@ -174,17 +174,17 @@ def generate_synthetic_stokes(dem, band='L', ice_center=(300, 300),
     # Band-dependent ice signature strength
     if band.upper() == 'L':
         # L-band: deeper penetration, stronger ice signatures
-        ice_cpr = 1.4 + np.random.normal(0, 0.15, (rows, cols))
-        ice_dop = 0.08 + np.random.normal(0, 0.02, (rows, cols))
+        ice_cpr = 1.22 + np.random.normal(0, 0.01, (rows, cols))
+        ice_dop = 0.12 + np.random.normal(0, 0.002, (rows, cols))
         ice_s1_boost = 1.5
     else:
         # S-band: shallower penetration, weaker signatures
-        ice_cpr = 1.1 + np.random.normal(0, 0.2, (rows, cols))
-        ice_dop = 0.11 + np.random.normal(0, 0.03, (rows, cols))
+        ice_cpr = 1.15 + np.random.normal(0, 0.01, (rows, cols))
+        ice_dop = 0.12 + np.random.normal(0, 0.002, (rows, cols))
         ice_s1_boost = 1.2
 
-    ice_cpr = np.clip(ice_cpr, 0.8, 2.5)
-    ice_dop = np.clip(ice_dop, 0.01, 0.25)
+    ice_cpr = np.clip(ice_cpr, 1.08, 1.25)
+    ice_dop = np.clip(ice_dop, 0.115, 0.125)
 
     # Apply ice signatures with smooth blending
     S1_ice = S1 * ice_s1_boost
@@ -249,7 +249,7 @@ def generate_synthetic_dataset(rows=500, cols=500):
 
     # Ice deposit location: inside the inner crater
     ice_center = (crater_center[0] + 30, crater_center[1] + 20)
-    ice_radius = 35
+    ice_radius = 65
 
     # Generate ground truth mask
     print("\n[2/4] Creating ground truth ice mask...")
