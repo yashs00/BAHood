@@ -392,15 +392,18 @@ def run_full_pipeline(stokes_L, stokes_S, dem, pixel_size, target_center,
     goal_pos = target_center
 
     try:
-        from .traverse import optimize_traverse
-        traverse_results = optimize_traverse(
-            dem, hazard, illumination, start_pos, goal_pos,
-            pixel_size=pixel_size
+        from .roa import MemoryAugmentedPlanner
+        # Note: slope is needed for ROA. It's computed in Step 4 and available here.
+        planner = MemoryAugmentedPlanner(
+            slope, hazard, illumination, dem, pixel_size=pixel_size
         )
+        traverse_results = planner.plan(start_pos, goal_pos)
         path = traverse_results['best_path']
         pareto_F = traverse_results.get('pareto_F', None)
         energy_profile = traverse_results.get('energy_profile', None)
-        print(f"  Traverse optimization complete (used pipeline module).")
+        
+        hit_str = "(cache hit)" if traverse_results.get('cache_hit', False) else "(cache miss, ran NSGA-II)"
+        print(f"  Traverse optimization complete via ROA Memory Planner {hit_str}.")
     except (ImportError, Exception) as e:
         print(f"  [FALLBACK] traverse module error: {e}, using linear path.")
         n_waypoints = config.NSGA2_N_WAYPOINTS + 2
